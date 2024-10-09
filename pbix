@@ -1,0 +1,82 @@
+// Tabela de Vendedores
+Vendedores = 
+DATATABLE(
+    "ID_Vendedor", INTEGER,
+    "Nome_Vendedor", STRING,
+    {
+        {1, "Vendedor A"},
+        {2, "Vendedor B"},
+        {3, "Vendedor C"},
+        {4, "Vendedor D"},
+        {5, "Vendedor E"}
+    }
+)
+// Cria uma tabela de vendedores com IDs e nomes.
+// Tabela D_Produtos_Detalhes
+D_Produtos_Detalhes = 
+SUMMARIZE(
+    financials,
+    financials[Product],
+    financials[Discount Band],
+    financials[Sale Price],
+    financials[Units Sold],
+    financials[Manufacturing Price],
+    "ID_produtos", RANKX(ALL(financials[Product]), financials[Product], , ASC, Dense)
+)
+// Gera uma tabela detalhada dos produtos com informações de vendas e um ID único.
+// Tabela D_Produtos_Detalhes
+D_Produtos_Detalhes = 
+SUMMARIZE(
+    financials,
+    financials[Product],
+    financials[Discount Band],
+    financials[Sale Price],
+    financials[Units Sold],
+    financials[Manufacturing Price],
+    "ID_produtos", RANKX(ALL(financials[Product]), financials[Product], , ASC, Dense)
+)
+// Gera uma tabela detalhada dos produtos com informações de vendas e um ID único.
+// Tabela D_Descontos
+D_Descontos = 
+SUMMARIZE(
+    financials,
+    financials[Product],
+    financials[Discounts],
+    financials[Discount Band],
+    "ID_produto", RANKX(ALL(financials[Product]), financials[Product], , ASC, Dense)
+)
+// Cria uma tabela de descontos associada aos produtos.
+// Tabela D_Detalhes
+D_Detalhes = 
+SUMMARIZE(
+    financials,
+    financials[Country],
+    financials[Date],
+    financials[Month Name],
+    financials[Month Number],
+    financials[Year],
+    financials[Segment]
+)
+// Resumida com detalhes sobre o país, data, mês e segmento.
+// Tabela D_Calendário
+D_Calendário = 
+CALENDAR(MIN(financials[Date]), MAX(financials[Date]))
+// Gera uma tabela de calendário com base no intervalo de datas da tabela financials.
+
+// Tabela F_Vendas
+F_Vendas = 
+SELECTCOLUMNS(
+    financials,
+    "SK_ID", RANKX(ALL(financials), financials[Date], , ASC, Dense),
+    "ID_Produto", financials[Product],
+    "Produto", financials[Product],
+    "Units Sold", financials[Units Sold],
+    "Sales Price", financials[Sale Price],
+    "Discount Band", financials[Discount Band],
+    "Segment", financials[Segment],
+    "Country", financials[Country],
+    "ID_Vendedor", RANDBETWEEN(1, 5),  // Gera um ID aleatório para o vendedor
+    "Profit", financials[Profit],
+    "Date", financials[Date]
+)
+// Cria uma tabela de vendas com informações detalhadas e um ID de vendedor aleatório.
